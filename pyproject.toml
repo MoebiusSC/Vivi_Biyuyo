@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vivi-biyuyo"
+version = "0.1.0"
+description = "Shadow-first FOMO smart-money memecoin engine"
+requires-python = ">=3.12"
+dependencies = ["httpx>=0.28,<1", "websockets>=15,<18"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3,<9"]
+
+[tool.setuptools.packages.find]
+include = ["vivi_biyuyo*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
