@@ -4,3 +4,8 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 state/
+
+secrets/
+work_*.py
+*.sqlite3*
+*.egg-info/

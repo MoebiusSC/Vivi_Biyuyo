@@ -1,0 +1,46 @@
+services:
+  vivi:
+    build: .
+    restart: unless-stopped
+    init: true
+    stop_grace_period: 30s
+    env_file: .env
+    environment:
+      VIVI_STATE_DIR: /data
+      VIVI_PORT: "8080"
+      FOMO_API_KEY_FILE: /run/secrets/fomo_api_key
+      VIVI_LIVE_TRADING: "false"
+    secrets: [fomo_api_key]
+    volumes: ["vivi_data:/data"]
+    ports: ["127.0.0.1:8080:8080"]
+    read_only: true
+    tmpfs: ["/tmp:size=16m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    mem_limit: 2g
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "5"}
+  caddy:
+    image: caddy:2.10.2-alpine
+    profiles: [https]
+    restart: unless-stopped
+    env_file: .env
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      vivi: {condition: service_healthy}
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+secrets:
+  fomo_api_key:
+    file: ./secrets/fomo_api_key
+volumes:
+  vivi_data:
+  caddy_data:
+  caddy_config:

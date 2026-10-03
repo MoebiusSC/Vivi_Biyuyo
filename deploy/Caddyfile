@@ -1,0 +1,11 @@
+{$VIVI_DOMAIN} {
+    basic_auth {
+        {$VIVI_DASHBOARD_USER} {$VIVI_DASHBOARD_PASSWORD_HASH}
+    }
+    header {
+        X-Content-Type-Options nosniff
+        Referrer-Policy no-referrer
+        X-Frame-Options DENY
+    }
+    reverse_proxy vivi:8080
+}
