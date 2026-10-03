@@ -28,10 +28,24 @@ FOMO recommends userId as the stable trader key and eventId as the alert dedupe 
 
 ## Run
 
-    cp .env.example .env
     python -m pip install -e ".[dev]"
+    export FOMO_API_KEY_FILE=/ruta/privada/fomo_api_key
     python -m vivi_biyuyo.main
+
+The Python entrypoint reads process environment variables. `.env` is loaded by
+Docker Compose, not automatically by Python. Without a FOMO key the dashboard
+starts, but `/ready` returns 503.
 
 Dashboard: http://localhost:8080
 
 Default persistent directory: state/vivi_biyuyo
+
+## OCI shadow/paper deployment
+
+See [the OCI runbook](docs/OCI.md) for the modular collector/intelligence/strategies,
+SQLite inbox and transactional paper portfolios, latency research, Compose volume,
+Docker secrets, health/readiness, backups and optional authenticated HTTPS with Caddy.
+
+`VIVI_MODE=shadow` is the default; `paper` simulates independent A/B/C/D portfolios
+using observed prices. Live trading remains unavailable and startup rejects live mode.
+No signing credentials are needed. Run `pytest -q` before deployment.
